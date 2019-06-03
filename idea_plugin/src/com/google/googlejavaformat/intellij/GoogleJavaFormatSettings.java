@@ -16,82 +16,81 @@
 
 package com.google.googlejavaformat.intellij;
 
-import javax.annotation.Nullable;
-
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
+import javax.annotation.Nullable;
 
 @State(
     name = "GoogleJavaFormatSettings",
     storages = {@Storage("google-java-format.xml")})
 class GoogleJavaFormatSettings implements PersistentStateComponent<GoogleJavaFormatSettings.State> {
 
-    private State state = new State();
+  private State state = new State();
 
-    static GoogleJavaFormatSettings getInstance(Project project) {
-        return ServiceManager.getService(project, GoogleJavaFormatSettings.class);
+  static GoogleJavaFormatSettings getInstance(Project project) {
+    return ServiceManager.getService(project, GoogleJavaFormatSettings.class);
+  }
+
+  @Nullable
+  @Override
+  public State getState() {
+    return state;
+  }
+
+  @Override
+  public void loadState(State state) {
+    this.state = state;
+  }
+
+  boolean isEnabled() {
+    return state.enabled.equals(EnabledState.ENABLED);
+  }
+
+  void setEnabled(boolean enabled) {
+    setEnabled(enabled ? EnabledState.ENABLED : EnabledState.DISABLED);
+  }
+
+  void setEnabled(EnabledState enabled) {
+    state.enabled = enabled;
+  }
+
+  boolean isUninitialized() {
+    return state.enabled.equals(EnabledState.UNKNOWN);
+  }
+
+  enum EnabledState {
+    UNKNOWN,
+    ENABLED,
+    DISABLED;
+  }
+
+  static class State {
+
+    private EnabledState enabled = EnabledState.UNKNOWN;
+
+    // enabled used to be a boolean so we use bean property methods for backwards compatibility
+    public void setEnabled(@Nullable String enabledStr) {
+      if (enabledStr == null) {
+        enabled = EnabledState.UNKNOWN;
+      } else if (Boolean.valueOf(enabledStr)) {
+        enabled = EnabledState.ENABLED;
+      } else {
+        enabled = EnabledState.DISABLED;
+      }
     }
 
-    @Nullable
-    @Override
-    public State getState() {
-        return state;
+    public String getEnabled() {
+      switch (enabled) {
+        case ENABLED:
+          return "true";
+        case DISABLED:
+          return "false";
+        default:
+          return null;
+      }
     }
-
-    @Override
-    public void loadState(State state) {
-        this.state = state;
-    }
-
-    boolean isEnabled() {
-        return state.enabled.equals(EnabledState.ENABLED);
-    }
-
-    void setEnabled(boolean enabled) {
-        setEnabled(enabled ? EnabledState.ENABLED : EnabledState.DISABLED);
-    }
-
-    void setEnabled(EnabledState enabled) {
-        state.enabled = enabled;
-    }
-
-    boolean isUninitialized() {
-        return state.enabled.equals(EnabledState.UNKNOWN);
-    }
-
-    enum EnabledState {
-        UNKNOWN,
-        ENABLED,
-        DISABLED;
-    }
-
-    static class State {
-
-        private EnabledState enabled = EnabledState.UNKNOWN;
-
-        // enabled used to be a boolean so we use bean property methods for backwards compatibility
-        public void setEnabled(@Nullable String enabledStr) {
-            if (enabledStr == null) {
-                enabled = EnabledState.UNKNOWN;
-            } else if (Boolean.valueOf(enabledStr)) {
-                enabled = EnabledState.ENABLED;
-            } else {
-                enabled = EnabledState.DISABLED;
-            }
-        }
-
-        public String getEnabled() {
-            switch (enabled) {
-                case ENABLED:
-                    return "true";
-                case DISABLED:
-                    return "false";
-                default:
-                    return null;
-            }
-        }
-    }
+  }
 }
