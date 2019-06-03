@@ -15,7 +15,7 @@
  */
 
 plugins {
-  id "org.jetbrains.intellij" version "0.3.11"
+  id 'org.jetbrains.intellij' version '0.4.8'
 }
 
 repositories {
@@ -23,28 +23,27 @@ repositories {
 }
 
 ext {
-  googleJavaFormatVersion = '1.6'
+  yextJavaFormatVersion = '0.1'
 }
 
 apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 
 intellij {
-  pluginName = "google-java-format"
+  pluginName = "yext-java-format"
   updateSinceUntilBuild = true
   version = "IC-183.2940.10"
 }
 
 patchPluginXml {
-  pluginDescription = "Formats source code using the google-java-format tool. This version of " +
-                      "the plugin uses version ${googleJavaFormatVersion} of the tool."
-  version = "${googleJavaFormatVersion}.2"
+  pluginDescription = "Formats source code using the yext-java-format tool. This version of " +
+                      "the plugin uses version ${yextJavaFormatVersion} of the tool."
+  version = "${yextJavaFormatVersion}.0.1"
   sinceBuild = '173'
 }
 
 publishPlugin {
-  username = project.ext.properties.jetbrainsPluginRepoUsername
-  password = project.ext.properties.jetbrainsPluginRepoPassword
+  token = project.ext.properties.jetbrainsPluginRepoToken
 }
 
 sourceSets {
@@ -52,8 +51,4 @@ sourceSets {
     java.srcDir 'src'
     resources.srcDir 'resources'
   }
-}
-
-dependencies {
-  compile "com.google.googlejavaformat:google-java-format:${googleJavaFormatVersion}"
 }
