@@ -12,4 +12,10 @@ target/
 
 bin/
 out/
+build/
 eclipse_plugin/lib/
+
+.gradle/
+**/gradle/wrapper/
+gradlew
+gradlew.bat
