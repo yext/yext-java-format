@@ -33,7 +33,7 @@ import com.intellij.psi.codeStyle.Indent;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ThrowableRunnable;
 import java.util.Collection;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Decorates the {@link CodeStyleManager} abstract class by delegating to a concrete implementation
@@ -230,5 +230,10 @@ class CodeStyleManagerDecorator extends CodeStyleManager
           .adjustLineIndent(document, offset, mode);
     }
     return offset;
+  }
+
+  @Override
+  public void scheduleReformatWhenSettingsComputed(PsiFile file) {
+    delegate.scheduleReformatWhenSettingsComputed(file);
   }
 }
